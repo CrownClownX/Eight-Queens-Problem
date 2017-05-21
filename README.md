@@ -5,12 +5,12 @@ Niżej znajduje się pomoc w języku polskim.
 
 If you need help just type -h as a program's argument in command line
 
-REMEMBER THAT PROGRAM DESIGNED TO BEING USED WITH COMMAND LINE! ALSO ITS NOT GONNA WORK WITHOUT ARGUMENT!
+REMEMBER THAT PROGRAM IS DESIGNED TO BEING USED WITH COMMAND LINE! ALSO ITS NOT GONNA WORK WITHOUT ARGUMENTS!
 
 To choose size of the chessboard type -s and after this argument write size you want. For example
   Queens.exe -s 33
   
-To add name needed to create text file with solution type -o in command line and after argument write program's name
+To add name needed to create text file with solution, type -o in command line and after this write program's name
   Queens.exe -o program
   
 To proper working you have to type both argument -s and -o
