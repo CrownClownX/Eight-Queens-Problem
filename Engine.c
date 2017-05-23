@@ -1,53 +1,53 @@
 #include "Engine.h"
 
-void engine(char** arg, int ile)
+void engine(char** arg, int quantity)
 {
-    int *rozmiar = NULL;
-    char *nazwa = NULL;
+    int *size = NULL;
+    char *name = NULL;
 
-    if((checkArg(arg, ile, &rozmiar, &nazwa)) == 0)
+    if((checkArg(arg, quantity, &size, &name)) == 0)
     {
         puts("ZLY ARGUMENT\n");
-        pomoc();
+        help();
         return;
     }
 
-    if(*rozmiar < 8)
+    if(*size < 8)
     {
         puts("ZA MALY ROZMIAR TABLICY\n");
         return;
     }
 
-    if((znajdz(rozmiar, nazwa)) == 0)
+    if((findSolution(size, name)) == 0)
     {
         puts("BLAD TWORZENIA TABLICY\n");
-        pomoc();
+        help();
         return;
     }
 
-    free(rozmiar);
-    free(arg);
+    free(size);
+    free(name);
 }
 
-int checkArg(char** arg, int ile, int** rozmiar, char ** nazwa)
+int checkArg(char** arg, int quantity, int** size, char ** name)
 {
     char h[3] = "-h";
     char s[3] = "-s";
     char o[3] = "-o";
-    int i;
-    if(ile > 1)
+    int i = 0;
+    if(quantity > 1)
     {
-        for(i = 1; i < ile; i++)
+        for(i = 1; i < quantity; i++)
         {
             if((strcmp(arg[i], h)) == 0)
-                pomoc();
+                help();
             else if((strcmp(arg[i], s)) == 0)
             {
                 i++;
-                if(czyLiczba(arg[i]) == 1)
+                if(ifDigit(arg[i]) == 1)
                 {
-                    *rozmiar = (int*)malloc(sizeof(int));
-                    **rozmiar = atoi(arg[i]);
+                    *size = (int*)malloc(sizeof(int));
+                    **size = atoi(arg[i]);
                 }
                 else
                     return 0;
@@ -55,8 +55,8 @@ int checkArg(char** arg, int ile, int** rozmiar, char ** nazwa)
             else if((strcmp(arg[i], o)) == 0)
             {
                 i++;
-                *nazwa = (char*)malloc(sizeof(char)*( strlen(arg[i])+ 1));
-                strcpy(*nazwa, arg[i]);
+                *name = (char*)malloc(sizeof(char)*( strlen(arg[i])+ 1));
+                strcpy(*name, arg[i]);
             }
             else
                 return 0;
@@ -65,7 +65,7 @@ int checkArg(char** arg, int ile, int** rozmiar, char ** nazwa)
     return 1;
 }
 
-void pomoc()
+void help()
 {
     printf("WITAJ W POMOCY PROGRAMU OBLICZAJ¥CEGO PROBLEM OŒMIU HETMANÓW\n");
     printf("POMOC WYWOLUJEMY ZA POMOCA PARAMETRU -h\n");
@@ -77,94 +77,94 @@ void pomoc()
 
 }
 
-tablica** stworzTab(int* rozmiar)
+chessboard** createBoard(int* size)
 {
-    if(*rozmiar < 8)
+    if(*size < 8)
         return NULL;
 
     int i, j;
-    tablica **tab = (tablica**)malloc(sizeof(tablica*)*(*rozmiar));
-    for(i = 0; i < *rozmiar; i++)
-        tab[i] = (tablica*)malloc(sizeof(tablica)*(*rozmiar));
+    chessboard **tab = (chessboard**)malloc(sizeof(chessboard*)*(*size));
+    for(i = 0; i < *size; i++)
+        tab[i] = (chessboard*)malloc(sizeof(chessboard)*(*size));
 
-    for(i = 0; i < *rozmiar; i++)
-        for(j = 0; j <  *rozmiar; j++)
-            tab[i][j] = PUSTE;
+    for(i = 0; i < *size; i++)
+        for(j = 0; j <  *size; j++)
+            tab[i][j] = EMPTY;
 
     return tab;
 }
 
-void zapisz(tablica** tab, char* nazwa, int *rozmiar)
+void save(chessboard** tab, char* name, int *size)
 {
-    FILE* plik;
+    FILE* txtFile;
     int x, y;
-    char bufor[50];
-    char t[5] = ".txt";
+    char buffer[50];
+    char extension[5] = ".txt";
 
-    strcpy(bufor, nazwa);
-    strcat(bufor, t);
+    strcpy(buffer, name);
+    strcat(buffer, extension);
 
-    if((plik = fopen(bufor, "w+"))==NULL)
+    if((txtFile = fopen(buffer, "w+"))==NULL)
     {
         puts("BLAD ZAPISU\n");
         return;
     }
 
-    for(y = 0; y < *rozmiar; y++)
+    for(y = 0; y < *size; y++)
     {
-        for(x = 0; x <  *rozmiar; x++)
-            if(tab[y][x] == PUSTE)
-                fprintf(plik,"o ");
-            else if(tab[y][x] == HETMAN)
-                fprintf(plik, "h ");
-        fprintf(plik,"\n");
+        for(x = 0; x <  *size; x++)
+            if(tab[y][x] == EMPTY)
+                fprintf(txtFile,"o ");
+            else if(tab[y][x] == QUEEN)
+                fprintf(txtFile, "h ");
+        fprintf(txtFile,"\n");
     }
 
-    fclose(plik);
+    fclose(txtFile);
     return;
 }
 
-int znajdz(int* rozmiar, char* nazwa)
+int findSolution(int* size, char* name)
 {
-    tablica** tab = NULL;
+    chessboard** tab = NULL;
 
-    int y = 0, x = 0, het = 0;
+    int y = 0, x = 0, queens = 0;
 
-    if(rozmiar == NULL)
+    if(size == NULL)
         return 0;
 
-    tab = stworzTab(rozmiar);
+    tab = createBoard(size);
 
     if(tab == NULL)
         return 0;
 
-    while(y < *rozmiar && het != 8)
+    while(y < *size && queens != 8)
     {
-        tab[y][x] = HETMAN;
-        het++;
+        tab[y][x] = QUEEN;
+        queens++;
         y++;
         x += 2;
 
-        if(x >= *rozmiar)
+        if(x >= *size)
             x = checkDiagon(tab, y);
     }
 
-    zapisz(tab, nazwa, rozmiar);
+    save(tab, name, size);
 
-    for(y = 0; y < *rozmiar; y++)
+    for(y = 0; y < *size; y++)
         free(tab[y]);
     free(tab);
 
     return 1;
 }
 
-int checkDiagon(tablica** tab, int y)
+int checkDiagon(chessboard** tab, int y)
 {
     int x = 1;
 
     while(y >= 0)
     {
-        if(tab[y][x] == HETMAN)
+        if(tab[y][x] == QUEEN)
             return 3;
         x++;
         y--;
@@ -173,7 +173,7 @@ int checkDiagon(tablica** tab, int y)
     return 1;
 }
 
-int czyLiczba(char* arg)
+int ifDigit(char* arg)
 {
     int i = strlen(arg)- 1;
 
