@@ -3,19 +3,19 @@
 #include <string.h>
 #include <ctype.h>
 
-typedef enum Tablica{
-    PUSTE, HETMAN
-}tablica;
+typedef enum Chessboard{
+    EMPTY, QUEEN
+}chessboard;
 
 void engine();
 
 int checkArg(char**, int, int**, char**);
-int znajdz(int*, char* );
+int findSolution(int*, char* );
 
-void pomoc();
+void help();
 
-tablica** stworzTab(int*);
+chessboard** createBoard(int*);
 
-void zapisz(tablica** tab, char* nazwa, int* rozmiar);
-int checkDiagon(tablica** tab, int y);
-int czyLiczba(char* arg);
+void save(chessboard**, char*, int*);
+int checkDiagon(chessboard**, int);
+int ifDigit(char*);
