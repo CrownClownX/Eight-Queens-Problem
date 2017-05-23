@@ -74,7 +74,6 @@ void help()
     printf("BY NADAC NAZWE PLIKOWI TEKSTOWEMU W KTORYM ODPOWIEDZ ZOSTANIE ZAPISANA PODAJEMY PARAMETR -o A PO NIM NAZWE\n");
     printf("WYSTARCZY PODAC SAMA NAZWE PLIKU DO ZAPISU, PROGRAM AUTOMATYCZNIE DODA ROZSZEZENIE TXT\n");
     printf("PRZYKLAD Queens.exe -s 10 -o rozwiazania\n");
-
 }
 
 chessboard** createBoard(int* size)
