@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1523002834 source:c:\users\hamer\documents\projects\eight-queens-problem\engine.c
+	"Engine.h"
+
+1523002676 c:\users\hamer\documents\projects\eight-queens-problem\engine.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+
+1523002834 source:c:\users\hamer\documents\projects\eight-queens-problem\main.c
+	"Engine.h"
+

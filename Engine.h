@@ -3,19 +3,23 @@
 #include <string.h>
 #include <ctype.h>
 
+#define H "-h"
+#define S "-s"
+#define O "-o"
+
 typedef enum Chessboard{
     EMPTY, QUEEN
 }chessboard;
 
-void engine();
+void engine(char** arg, int quantity);
 
-int checkArg(char**, int, int**, char**);
-int findSolution(int*, char* );
+int checkArg(char** arg, int quantity, int* size, char ** name);
+int findSolution(int size, char* name);
 
 void help();
 
-chessboard** createBoard(int*);
+chessboard** createBoard(int size);
 
-void save(chessboard**, char*, int*);
-int checkDiagon(chessboard**, int);
-int ifDigit(char*);
+void save(chessboard** tab, char* name, int size);
+int checkDiagon(chessboard** tab, int y);
+int ifDigit(char* arg);
