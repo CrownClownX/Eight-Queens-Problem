@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-s 9 -o Programe" />
+				<Option parameters="-s 9 -o Progr" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -36,6 +36,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../Engine.h" />
+		<Unit filename="../Parameter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../Parameter.h" />
 		<Unit filename="../main.c">
 			<Option compilerVar="CC" />
 		</Unit>

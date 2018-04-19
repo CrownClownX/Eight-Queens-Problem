@@ -1,25 +1,32 @@
+#ifndef ENGINE
+#define ENGINE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
-#define H "-h"
-#define S "-s"
-#define O "-o"
-
+//enum reprezentujący szachownice
 typedef enum Chessboard{
     EMPTY, QUEEN
 }chessboard;
 
-void engine(char** arg, int quantity);
+//Wywołuje funkcje znajdującą rozwiązanie oraz wypisuje komunikaty o błędach
+void engine(int sizeOfChessboard, char* name);
 
-int checkArg(char** arg, int quantity, int* size, char ** name);
-int findSolution(int size, char* name);
+//Funkcja ustawia hetmanów na szachownicy i wywołuje funkcję save()
+int findSolution(int sizeOfChessboard, char* name);
 
-void help();
+//Tworzy tablicę reprezentującą szachownice
+chessboard** createBoard(int sizeOfChessboard);
 
-chessboard** createBoard(int size);
+//yAxisSolution znajduje położenie hetmanów w osi Y, w zależności od rozmiaru szachownicy
+//funkcja może dodatkowo przekształcić tablicę zawierającą współrzędne Y za pomocą funkcji findTab2 i findTab3
+int* yAxisSolution(int sizeOfChessboard);
+void findTab2(int* tab, int sizeOfChessboard);
+void findTab3(int* tab, int sizeOfChessboard);
 
-void save(chessboard** tab, char* name, int size);
-int checkDiagon(chessboard** tab, int y);
-int ifDigit(char* arg);
+//Zapisuje tablicę do pliku, w razie błędu zwórci 0
+int save(chessboard** tab, char* name, int sizeOfChessboard);
+
+#endif
+

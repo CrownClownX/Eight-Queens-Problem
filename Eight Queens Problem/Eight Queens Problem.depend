@@ -1,13 +1,22 @@
 # depslib dependency file v1.0
-1523002834 source:c:\users\hamer\documents\projects\eight-queens-problem\engine.c
+1524073494 source:c:\users\hamer\documents\projects\eight-queens-problem\engine.c
 	"Engine.h"
 
-1523002676 c:\users\hamer\documents\projects\eight-queens-problem\engine.h
+1524111229 c:\users\hamer\documents\projects\eight-queens-problem\engine.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1524053175 source:c:\users\hamer\documents\projects\eight-queens-problem\main.c
+	"Engine.h"
+	"Parameter.h"
+
+1524052992 c:\users\hamer\documents\projects\eight-queens-problem\parameter.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<ctype.h>
 
-1523002834 source:c:\users\hamer\documents\projects\eight-queens-problem\main.c
-	"Engine.h"
+1524073169 source:c:\users\hamer\documents\projects\eight-queens-problem\parameter.c
+	"Parameter.h"
 

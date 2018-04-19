@@ -1,104 +1,150 @@
 #include "Engine.h"
 
-void engine(char** arg, int quantity)
+void engine(int sizeOfChessboard, char* name)
 {
-    int size = NULL;
-    char *name = NULL;
-
-    if(!(checkArg(arg, quantity, &size, &name)))
+    if(!name)
+        puts("BRAK NAZWY PLIKU");
+    else if((sizeOfChessboard > 1 && sizeOfChessboard < 4 )|| sizeOfChessboard == 0)
+        puts("BRAK ROZWIAZANIA DLA TAKIEGO ROZMIARU TABLICY");
+    else
     {
-        puts("ZLY ARGUMENT\n");
-        return;
+        if(!(findSolution(sizeOfChessboard, name)))
+            puts("BLAD TWORZENIA TABLICY");
     }
-
-    if(size < 8)
-    {
-        puts("ZA MALY ROZMIAR TABLICY\n");
-        return;
-    }
-
-    if(!(findSolution(size, name)))
-    {
-        puts("BLAD TWORZENIA TABLICY\n");
-        return;
-    }
-
-    free(name);
 }
 
-int checkArg(char** arg, int quantity, int* size, char ** name)
+int findSolution(int sizeOfChessboard, char* name)
 {
-    int i = 0;
+    chessboard** tab = createBoard(sizeOfChessboard);
+    int* yValue = yAxisSolution(sizeOfChessboard);
+    int y = 0, returnValue = 1, i;
 
-    if(quantity <= 1)
-        return 0;
+    if(!tab || !yValue)
+        returnValue = 0;
 
-    for(i = 1; i < quantity; i++)
+    for(i = 0; i < sizeOfChessboard; i++)
+        if(!tab[i])
+            returnValue = 0;
+
+    if(returnValue != 0)
     {
-        if(!(strcmp(arg[i], H)))
-            help();
-        else if(!(strcmp(arg[i], S)))
+        for(i = 0; i < sizeOfChessboard; i++)
         {
-            i++;
-            if(ifDigit(arg[i]))
-                *size = atoi(arg[i]);
-            else
-                return 0;
+            int j = yValue[i] - 1;
+            tab[i][j] = QUEEN;
         }
-        else if(!(strcmp(arg[i], O)))
-        {
-            i++;
-            *name = (char*)malloc(sizeof(char)*( strlen(arg[i])+ 1));
-            strcpy(*name, arg[i]);
-        }
-        else
-            return 0;
+
+        if(!save(tab, name, sizeOfChessboard))
+            returnValue = 0;
     }
 
-    return 1;
+    for(y = 0; y < sizeOfChessboard; y++)
+        free(tab[y]);
+
+    free(tab);
+    free(yValue);
+
+    return returnValue;
 }
 
-void help()
-{
-    printf("WITAJ W POMOCY PROGRAMU OBLICZAJ¥CEGO PROBLEM OŒMIU HETMANÓW\n");
-    printf("POMOC WYWOLUJEMY ZA POMOCA PARAMETRU -h\n");
-    printf("BY WYBRAC WIELKOSC TABLICY UZYWAMY PARAMETRU -s A PO NIM PODAJEMY WIELKOSC\n");
-    printf("WIELKOSC TABLICY POWINNA BYC WIEKSZA NIZ 8, INACZEJ PROBLEM STAJE SIE NIEMOZLIWY DO ROZWIAZANIA\n");
-    printf("BY NADAC NAZWE PLIKOWI TEKSTOWEMU W KTORYM ODPOWIEDZ ZOSTANIE ZAPISANA PODAJEMY PARAMETR -o A PO NIM NAZWE\n");
-    printf("WYSTARCZY PODAC SAMA NAZWE PLIKU DO ZAPISU, PROGRAM AUTOMATYCZNIE DODA ROZSZEZENIE TXT\n");
-    printf("PRZYKLAD Queens.exe -s 10 -o rozwiazania\n");
-}
-
-chessboard** createBoard(int size)
+chessboard** createBoard(int sizeOfChessboard)
 {
     int i, j;
+    chessboard **tab = (chessboard**)malloc(sizeof(chessboard*)*sizeOfChessboard);
 
-    chessboard **tab = (chessboard**)malloc(sizeof(chessboard*)*size);
-    for(i = 0; i < size; i++)
-        tab[i] = (chessboard*)malloc(sizeof(chessboard)*size);
+    for(i = 0; i < sizeOfChessboard; i++)
+        tab[i] = (chessboard*)malloc(sizeof(chessboard)*sizeOfChessboard);
 
-    for(i = 0; i < size; i++)
-        for(j = 0; j < size; j++)
+    for(i = 0; i < sizeOfChessboard; i++)
+    {
+        for(j = 0; j < sizeOfChessboard; j++)
             tab[i][j] = EMPTY;
+    }
 
     return tab;
 }
 
-void save(chessboard** tab, char* name, int size)
+int* yAxisSolution(int sizeOfChessboard)
+{
+    int * tab = malloc(sizeof(int)*sizeOfChessboard);
+
+    if(!tab)
+        return NULL;
+
+    if(sizeOfChessboard == 1)
+    {
+        tab[0] = 1;
+        return tab;
+    }
+
+    int i, k = 2;
+    for(i = 0; i < sizeOfChessboard; i++)
+    {
+        if(k == sizeOfChessboard || (k+1) == sizeOfChessboard)
+            k = 1;
+        else if(i != 0)
+            k += 2;
+
+        tab[i] = k;
+    }
+
+    if((sizeOfChessboard%6) == 2)
+        findTab2(tab, sizeOfChessboard);
+    else if((sizeOfChessboard%6) == 3)
+        findTab3(tab, sizeOfChessboard);
+
+    return tab;
+}
+
+void findTab2(int* tab, int sizeOfChessboard)
+{
+    int i;
+    for(i = 0; tab[i] != 5; i++)
+    {
+        if(tab[i] == 1)
+        {
+            tab[i] = 3;
+            tab[++i] = 1;
+        }
+    }
+
+    for(;i < sizeOfChessboard; i++)
+    {
+        if(i != (sizeOfChessboard - 1))
+            tab[i] = tab[i +1];
+        else
+            tab[i] = 5;
+    }
+}
+
+void findTab3(int* tab, int sizeOfChessboard)
+{
+    int i;
+    for(i = 0; tab[i] != sizeOfChessboard - 1; i++)
+        tab[i] = tab[i + 1];
+
+    tab[i] = 2;
+
+    for(i += 1; i < sizeOfChessboard - 2; ++i)
+        tab[i] = tab[i + 2];
+
+    tab[i] = 1;
+    tab[i + 1] = 3;
+}
+
+int save(chessboard** tab, char* name, int size)
 {
     FILE* txtFile;
     int x, y;
     char buffer[50];
-    char extension[5] = ".txt";
+    char extension[5] = ".txt\0";
 
     strcpy(buffer, name);
     strcat(buffer, extension);
 
-    if((txtFile = fopen(buffer, "w+"))== NULL)
-    {
-        puts("BLAD ZAPISU\n");
-        return;
-    }
+    txtFile = fopen(buffer, "w+");
+    if(!txtFile)
+        return 0;
 
     for(y = 0; y < size; y++)
     {
@@ -111,61 +157,5 @@ void save(chessboard** tab, char* name, int size)
     }
 
     fclose(txtFile);
-    return;
-}
-
-int findSolution(int size, char* name)
-{
-    chessboard** tab = NULL;
-    int y = 0, x = 0, queens = 0;
-
-    tab = createBoard(size);
-
-    while(y < size && queens != 8)
-    {
-        tab[y][x] = QUEEN;
-        queens++;
-        y++;
-        x += 2;
-
-        if(x >= size)
-            x = checkDiagon(tab, y);
-    }
-
-    save(tab, name, size);
-
-    for(y = 0; y < size; y++)
-        free(tab[y]);
-    free(tab);
-
-    return 1;
-}
-
-int checkDiagon(chessboard** tab, int y)
-{
-    int x = 1;
-
-    while(y >= 0)
-    {
-        if(tab[y][x] == QUEEN)
-            return 3;
-        x++;
-        y--;
-    }
-
-    return 1;
-}
-
-int ifDigit(char* arg)
-{
-    int i = strlen(arg)- 1;
-
-    while(i >= 0)
-    {
-        if(isdigit(arg[i]) == 0)
-            return 0;
-        i--;
-    }
-
     return 1;
 }
